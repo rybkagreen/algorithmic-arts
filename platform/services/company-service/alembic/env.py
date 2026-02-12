@@ -13,13 +13,14 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 config = context.config
 
 # Interpret the config file for Python logging.
+from src.models import Base
+
 # This line sets up loggers basically.
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-from src.models import Base
 
 target_metadata = Base.metadata
 

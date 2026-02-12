@@ -1,51 +1,61 @@
 #!/usr/bin/env python3
-"""Генерация криптографически стойких секретов для .env"""
+"""Generate secrets for ALGORITHMIC ARTS platform."""
 
-import base64
-import secrets
-
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import serialization
+import os
+import sys
 from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.serialization import Encoding, PrivateFormat, PublicFormat
 
-
-def generate_rsa_key_pair():
-    """Генерирует пару RSA-ключей для RS256 JWT."""
+def generate_jwt_keys():
+    """Generate RSA key pair for JWT."""
     private_key = rsa.generate_private_key(
         public_exponent=65537,
         key_size=2048,
-        backend=default_backend()
     )
+    
+    # Serialize private key
     private_pem = private_key.private_bytes(
-        encoding=serialization.Encoding.PEM,
-        format=serialization.PrivateFormat.TraditionalOpenSSL,
+        encoding=Encoding.PEM,
+        format=PrivateFormat.PKCS8,
         encryption_algorithm=serialization.NoEncryption()
-    ).decode()
-
-    public_pem = private_key.public_key().public_bytes(
-        encoding=serialization.Encoding.PEM,
-        format=serialization.PublicFormat.SubjectPublicKeyInfo
-    ).decode()
-
+    ).decode('utf-8')
+    
+    # Serialize public key
+    public_key = private_key.public_key()
+    public_pem = public_key.public_bytes(
+        encoding=Encoding.PEM,
+        format=PublicFormat.SubjectPublicKeyInfo
+    ).decode('utf-8')
+    
     return private_pem, public_pem
 
-
 def main():
-    # Случайные пароли для БД
-    print(f"DB_PASSWORD={secrets.token_urlsafe(32)}")
-    print(f"CLICKHOUSE_PASSWORD={secrets.token_urlsafe(32)}")
-    print(f"MINIO_ROOT_PASSWORD={secrets.token_urlsafe(32)}")
-    print(f"SECRET_KEY={secrets.token_hex(64)}")
-    print(f"GRAFANA_PASSWORD={secrets.token_urlsafe(16)}")
-    print(f"PGADMIN_PASSWORD={secrets.token_urlsafe(16)}")
-
-    # RSA ключи для JWT
-    private_pem, public_pem = generate_rsa_key_pair()
-    # Кодируем в base64 для удобства хранения в .env
-    private_b64 = base64.b64encode(private_pem.encode()).decode()
-    public_b64  = base64.b64encode(public_pem.encode()).decode()
-    print(f"JWT_PRIVATE_KEY={private_b64}")
-    print(f"JWT_PUBLIC_KEY={public_b64}")
+    """Main function to generate secrets."""
+    print("# Generated secrets for ALGORITHMIC ARTS platform")
+    print("# DO NOT COMMIT THIS FILE TO VERSION CONTROL")
+    print("# This file is intended to be used with .env.example")
+    
+    # Generate JWT keys
+    private_key, public_key = generate_jwt_keys()
+    
+    # Print secrets
+    print(f"JWT_PRIVATE_KEY={private_key.replace(os.linesep, ' ')}")
+    print(f"JWT_PUBLIC_KEY={public_key.replace(os.linesep, ' ')}")
+    
+    # Generate other secrets
+    print(f"SECRET_KEY={os.urandom(32).hex()}")
+    print(f"REDIS_PASSWORD={os.urandom(16).hex()}")
+    print(f"POSTGRES_PASSWORD=change_me")
+    print(f"CLICKHOUSE_PASSWORD=change_me")
+    
+    # OAuth secrets (for development only)
+    print(f"OAUTH_YANDEX_CLIENT_ID=dev_yandex_client_id")
+    print(f"OAUTH_YANDEX_CLIENT_SECRET=dev_yandex_client_secret")
+    print(f"OAUTH_GOOGLE_CLIENT_ID=dev_google_client_id")
+    print(f"OAUTH_GOOGLE_CLIENT_SECRET=dev_google_client_secret")
+    print(f"OAUTH_VK_CLIENT_ID=dev_vk_client_id")
+    print(f"OAUTH_VK_CLIENT_SECRET=dev_vk_client_secret")
 
 if __name__ == "__main__":
     main()

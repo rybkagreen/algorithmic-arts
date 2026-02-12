@@ -6,11 +6,12 @@ Create Date: 2026-02-12 11:00:00
 
 """
 import uuid
-from datetime import date, datetime
+from datetime import datetime
 
 import sqlalchemy as sa
 from alembic import op
 from sqlalchemy.dialects import postgresql
+from pgvector.sqlalchemy import Vector
 
 # revision identifiers, used by Alembic.
 revision = '2a3b4c5d6e7f'
@@ -49,7 +50,7 @@ def upgrade() -> None:
         sa.Column('api_available', sa.Boolean, default=False),
         sa.Column('ai_summary', sa.Text),
         sa.Column('ai_tags', postgresql.ARRAY(sa.String(50))),
-        sa.Column('embedding', postgresql VECTOR(1536)),
+        sa.Column('embedding', Vector(1536)),
         sa.Column('is_verified', sa.Boolean, default=False),
         sa.Column('view_count', sa.Integer, default=0),
         sa.Column('created_at', sa.DateTime(timezone=True), default=datetime.utcnow),
