@@ -1,6 +1,3 @@
-from datetime import datetime
-from uuid import UUID
-
 from .domain.company import Company
 from .infrastructure.kafka.producers import CompanyEventProducer
 from .infrastructure.repositories.company_repository import CompanyRepository

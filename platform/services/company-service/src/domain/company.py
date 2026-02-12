@@ -1,10 +1,9 @@
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, List, Optional
+from typing import Any, List
 from uuid import UUID, uuid4
 
-from .events import CompanyCreated, CompanyEnriched, CompanyUpdated
-from .exceptions import CompanyValidationError
+from .events import CompanyCreated, CompanyEnriched, CompanyUpdated, CompanyUpdateRecorded, CompanyMetricRecorded
 from .value_objects import INN, OGRN, FundingAmount
 
 
@@ -60,8 +59,10 @@ class Company:
 
     def update(self, **kwargs) -> None:
         changed_fields = {}
+        old_values = {}
         for key, value in kwargs.items():
             if hasattr(self, key) and getattr(self, key) != value:
+                old_values[key] = getattr(self, key)
                 setattr(self, key, value)
                 changed_fields[key] = value
 
@@ -74,17 +75,49 @@ class Company:
                     occurred_at=datetime.utcnow()
                 )
             )
+            # Генерируем событие для partitioned table company_updates
+            self._domain_events.append(
+                CompanyUpdateRecorded(
+                    company_id=self.id,
+                    update_type="company_update",
+                    changed_fields=list(changed_fields.keys()),
+                    occurred_at=datetime.utcnow()
+                )
+            )
+
+    def record_metric(self, metric_type: str, value: float, unit: str = "") -> None:
+        """Записать метрику компании."""
+        self._domain_events.append(
+            CompanyMetricRecorded(
+                company_id=self.id,
+                metric_type=metric_type,
+                value=value,
+                unit=unit,
+                occurred_at=datetime.utcnow()
+            )
+        )
 
     def enrich(self, ai_summary: str, ai_tags: List[str], embedding: List[float]) -> None:
+        """Обогатить компанию AI-данными."""
         self.ai_summary = ai_summary
         self.ai_tags = ai_tags
         self.embedding = embedding
         self.updated_at = datetime.utcnow()
+        
         self._domain_events.append(
             CompanyEnriched(
                 company_id=self.id,
                 ai_summary=ai_summary,
                 ai_tags=ai_tags,
+                occurred_at=datetime.utcnow()
+            )
+        )
+        # Генерируем событие для partitioned table company_updates
+        self._domain_events.append(
+            CompanyUpdateRecorded(
+                company_id=self.id,
+                update_type="company_enrichment",
+                changed_fields=["ai_summary", "ai_tags", "embedding"],
                 occurred_at=datetime.utcnow()
             )
         )

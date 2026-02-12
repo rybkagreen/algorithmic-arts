@@ -1,31 +1,17 @@
 from contextlib import asynccontextmanager
-
 import structlog
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from prometheus_fastapi_instrumentator import Instrumentator
 
+from shared.logging import get_logger
+from shared.schemas import HealthCheckResponse
 from .config import settings
 from .routers import users
 
-# Настройка логгера
-structlog.configure(
-    processors=[
-        structlog.stdlib.filter_by_level,
-        structlog.stdlib.add_logger_name,
-        structlog.stdlib.add_log_level,
-        structlog.stdlib.PositionalArgumentsFormatter(),
-        structlog.processors.TimeStamper(fmt="iso"),
-        structlog.processors.StackInfoRenderer(),
-        structlog.processors.format_exc_info,
-        structlog.processors.JSONRenderer()
-    ],
-    context_class=dict,
-    logger_factory=structlog.stdlib.LoggerFactory(),
-    wrapper_class=structlog.stdlib.BoundLogger,
-    cache_logger_on_first_use=True,
-)
+# Use shared logging configuration
+logger = get_logger("user-service")
 
 
 @asynccontextmanager
@@ -65,4 +51,4 @@ app.include_router(users.router)
 # Health check
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy", "service": "user-service"}
+    return HealthCheckResponse(service="user-service", version="1.0.0")

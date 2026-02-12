@@ -1,11 +1,9 @@
 import uuid
-from datetime import datetime
 
-from sqlalchemy import UUID, Column, DateTime, Numeric, String
+from sqlalchemy import Column, DateTime, Numeric, String
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 
 from .base import BaseModel, TimestampMixin
-from .company import Company
 
 
 class CompanyMetric(BaseModel, TimestampMixin):

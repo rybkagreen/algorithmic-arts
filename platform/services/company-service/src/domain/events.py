@@ -25,3 +25,20 @@ class CompanyEnriched:
     ai_summary: str
     ai_tags: List[str]
     occurred_at: datetime
+
+
+@dataclass
+class CompanyUpdateRecorded:
+    company_id: UUID
+    update_type: str
+    changed_fields: List[str]
+    occurred_at: datetime
+
+
+@dataclass
+class CompanyMetricRecorded:
+    company_id: UUID
+    metric_type: str
+    value: float
+    unit: str
+    occurred_at: datetime

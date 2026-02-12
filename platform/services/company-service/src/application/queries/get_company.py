@@ -10,9 +10,10 @@ class GetCompanyQuery:
         self.company_repository = company_repository
 
     async def execute(self, company_id: UUID) -> Company:
-        company_data = await self.company_repository.get(company_id)
+        """Получить компанию по ID (только активные)."""
+        company_data = await self.company_repository.get_by_id(company_id)
         if not company_data:
-            raise CompanyNotFoundError()
-        
+            raise CompanyNotFoundError(f"Company with id {company_id} not found or deleted")
+
         # Преобразование в доменный объект
-        return Company(**company_data)
+        return Company(**company_data.__dict__)

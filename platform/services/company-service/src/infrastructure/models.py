@@ -2,7 +2,7 @@ from datetime import datetime
 from uuid import UUID, uuid4
 
 import sqlalchemy as sa
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column
 
 from .base import Base
 
@@ -47,3 +47,48 @@ class Company(Base):
         sa.DateTime(timezone=True), server_default=sa.func.now(), onupdate=sa.func.now()
     )
     deleted_at: Mapped[datetime | None] = mapped_column(sa.DateTime(timezone=True))
+
+
+class CompanyUpdate(Base):
+    """Partitioned table for company updates (range partitioning by created_at)."""
+    __tablename__ = "company_updates"
+
+    id: Mapped[UUID] = mapped_column(
+        sa.UUID(as_uuid=True), primary_key=True, default=uuid4
+    )
+    company_id: Mapped[UUID] = mapped_column(sa.UUID(as_uuid=True), nullable=False, index=True)
+    update_type: Mapped[str] = mapped_column(sa.String(50), nullable=False)
+    old_value: Mapped[dict] = mapped_column(sa.JSONB, default=dict)
+    new_value: Mapped[dict] = mapped_column(sa.JSONB, default=dict)
+    changed_fields: Mapped[list[str]] = mapped_column(sa.ARRAY(sa.String(100)), default=list)
+    created_at: Mapped[datetime] = mapped_column(
+        sa.DateTime(timezone=True), nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        sa.DateTime(timezone=True), server_default=sa.func.now(), onupdate=sa.func.now()
+    )
+
+
+class CompanyMetric(Base):
+    """Partitioned table for company metrics (hash partitioning by company_id)."""
+    __tablename__ = "company_metrics"
+
+    id: Mapped[UUID] = mapped_column(
+        sa.UUID(as_uuid=True), primary_key=True, default=uuid4
+    )
+    company_id: Mapped[UUID] = mapped_column(sa.UUID(as_uuid=True), nullable=False, index=True)
+    metric_type: Mapped[str] = mapped_column(sa.String(50), nullable=False)
+    value: Mapped[float] = mapped_column(sa.Numeric(precision=12, scale=4), nullable=False)
+    unit: Mapped[str | None] = mapped_column(sa.String(20))
+    period_start: Mapped[datetime] = mapped_column(
+        sa.DateTime(timezone=True), nullable=False
+    )
+    period_end: Mapped[datetime] = mapped_column(
+        sa.DateTime(timezone=True), nullable=False
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        sa.DateTime(timezone=True), server_default=sa.func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        sa.DateTime(timezone=True), server_default=sa.func.now(), onupdate=sa.func.now()
+    )

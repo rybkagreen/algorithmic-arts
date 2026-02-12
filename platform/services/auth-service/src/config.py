@@ -35,6 +35,21 @@ class KafkaSettings(BaseModel):
     max_poll_records: int = Field(default=500)
 
 
+class OAuthSettings(BaseModel):
+    yandex: dict = Field(default_factory=lambda: {
+        "client_id": "",
+        "client_secret": ""
+    })
+    google: dict = Field(default_factory=lambda: {
+        "client_id": "",
+        "client_secret": ""
+    })
+    vk: dict = Field(default_factory=lambda: {
+        "client_id": "",
+        "client_secret": ""
+    })
+
+
 class EmailSettings(BaseModel):
     host: str = Field(default="smtp.yandex.ru")
     port: int = Field(default=587)
@@ -52,6 +67,7 @@ class Settings(BaseSettings):
     redis: RedisSettings = Field(default_factory=RedisSettings)
     jwt: JWTSettings = Field(default_factory=JWTSettings)
     kafka: KafkaSettings = Field(default_factory=KafkaSettings)
+    oauth: OAuthSettings = Field(default_factory=OAuthSettings)
     email: EmailSettings = Field(default_factory=EmailSettings)
 
     class Config:

@@ -1,74 +1,102 @@
-from datetime import datetime
-from typing import Optional
-from uuid import UUID
+"""User service for user service."""
 
-from sqlalchemy.ext.asyncio import AsyncSession
+from datetime import datetime, timedelta
+from typing import Dict, Optional, List, Any
+import uuid
 
-from .core.cache import UserCacheService
-from .core.permissions import require_permission
-from .models.user_profile import UserProfile
+from shared.logging import get_logger
+from .config import settings
 from .repositories.user_repository import UserRepository
-from .schemas.user import UserProfileCreate, UserProfileUpdate
+from .schemas.user import UserCreate, UserUpdate, UserOut, CompanyCreate, CompanyUpdate, CompanyOut
+from .core.exceptions import UserNotFoundError, InvalidCredentialsError
+
+logger = get_logger("user-service")
 
 
 class UserService:
-    def __init__(
-        self,
-        db: AsyncSession,
-        user_repository: UserRepository,
-        cache_service: UserCacheService,
-    ):
-        self.db = db
-        self.user_repository = user_repository
-        self.cache_service = cache_service
-
-    async def get_profile(self, user_id: UUID) -> dict:
-        # Попытка получить из кэша
-        cached = await self.cache_service.get(user_id)
-        if cached:
-            return cached
-
-        # Получение из БД
-        profile = await self.user_repository.get_profile(user_id)
-        if not profile:
-            return {}
-
-        # Кэширование
-        await self.cache_service.set(user_id, profile.__dict__)
-        return profile.__dict__
-
-    async def create_profile(self, user_id: UUID, data: UserProfileCreate) -> UserProfile:
-        profile = UserProfile(
-            user_id=user_id,
-            avatar_url=data.avatar_url,
-            bio=data.bio,
-            job_title=data.job_title,
-            location=data.location,
-            timezone=data.timezone,
-            language=data.language,
-            theme_preference=data.theme_preference or "light",
-            email_notifications=data.email_notifications if data.email_notifications is not None else True,
-            push_notifications=data.push_notifications if data.push_notifications is not None else True,
-            sms_notifications=data.sms_notifications if data.sms_notifications is not None else False,
-            two_factor_method=data.two_factor_method,
-            created_at=datetime.utcnow(),
-            updated_at=datetime.utcnow(),
-        )
-        return await self.user_repository.create_profile(profile)
-
-    async def update_profile(self, user_id: UUID, data: UserProfileUpdate) -> UserProfile:
-        profile = await self.user_repository.get_profile(user_id)
-        if not profile:
-            raise ValueError("Profile not found")
-
-        # Обновление полей
-        for field, value in data.dict(exclude_unset=True).items():
-            setattr(profile, field, value)
+    """User service."""
+    
+    def __init__(self):
+        self.user_repository = UserRepository()
+    
+    async def create_user(self, user_data: UserCreate) -> UserOut:
+        """Create new user."""
+        # Check if user exists
+        async with get_db() as db:
+            existing_user = await self.user_repository.get_by_email(db, user_data.email)
+            if existing_user:
+                raise UserNotFoundError("User already exists")
         
-        profile.updated_at = datetime.utcnow()
-        updated_profile = await self.user_repository.update_profile(profile)
+        # Hash password (in real implementation, this would be done in auth service)
+        # For user service, we assume password is already hashed by auth service
         
-        # Инвалидация кэша
-        await self.cache_service.invalidate(user_id)
+        # Create user
+        user_data_dict = user_data.model_dump()
+        user_data_dict['password_hash'] = ""  # Will be set by auth service
         
-        return updated_profile
+        async with get_db() as db:
+            user = await self.user_repository.create_user(db, user_data_dict)
+            
+            # Return user data
+            return UserOut(**self.user_repository.to_dict(user))
+    
+    async def get_user_by_id(self, user_id: uuid.UUID) -> UserOut:
+        """Get user by ID."""
+        async with get_db() as db:
+            user = await self.user_repository.get_by_id(db, user_id)
+            if not user:
+                raise UserNotFoundError(f"User with ID {user_id} not found")
+            
+            return UserOut(**self.user_repository.to_dict(user))
+    
+    async def update_user(self, user_id: uuid.UUID, update_data: UserUpdate) -> UserOut:
+        """Update user."""
+        async with get_db() as db:
+            updated_user = await self.user_repository.update_user(db, user_id, update_data.model_dump(exclude_unset=True))
+            return UserOut(**self.user_repository.to_dict(updated_user))
+    
+    async def delete_user(self, user_id: uuid.UUID) -> None:
+        """Delete user (soft delete)."""
+        async with get_db() as db:
+            await self.user_repository.soft_delete_user(db, user_id)
+    
+    async def create_company(self, company_data: CompanyCreate) -> CompanyOut:
+        """Create new company."""
+        async with get_db() as db:
+            # Check if company exists by slug
+            existing_company = await self.user_repository.get_company_by_slug(db, company_data.slug)
+            if existing_company:
+                raise UserNotFoundError("Company already exists")
+            
+            company_data_dict = company_data.model_dump()
+            
+            company = await self.user_repository.create_company(db, company_data_dict)
+            
+            return CompanyOut(**self.user_repository.to_company_dict(company))
+    
+    async def get_company_by_id(self, company_id: uuid.UUID) -> CompanyOut:
+        """Get company by ID."""
+        async with get_db() as db:
+            company = await self.user_repository.get_company_by_id(db, company_id)
+            if not company:
+                raise UserNotFoundError(f"Company with ID {company_id} not found")
+            
+            return CompanyOut(**self.user_repository.to_company_dict(company))
+    
+    async def update_company(self, company_id: uuid.UUID, update_data: CompanyUpdate) -> CompanyOut:
+        """Update company."""
+        async with get_db() as db:
+            updated_company = await self.user_repository.update_company(db, company_id, update_data.model_dump(exclude_unset=True))
+            return CompanyOut(**self.user_repository.to_company_dict(updated_company))
+    
+    async def get_users_for_company(self, company_id: uuid.UUID) -> List[UserOut]:
+        """Get all users for a company."""
+        async with get_db() as db:
+            users = await self.user_repository.get_users_by_company(db, company_id)
+            return [UserOut(**self.user_repository.to_dict(user)) for user in users]
+    
+    async def assign_user_to_company(self, user_id: uuid.UUID, company_id: uuid.UUID) -> UserOut:
+        """Assign user to company."""
+        async with get_db() as db:
+            user = await self.user_repository.update_user(db, user_id, {"company_id": str(company_id)})
+            return UserOut(**self.user_repository.to_dict(user))

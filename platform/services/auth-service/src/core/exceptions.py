@@ -1,51 +1,45 @@
-from fastapi import HTTPException, status
+"""Auth service exceptions."""
+
+from shared.exceptions import BaseApplicationException, ValidationException
 
 
-class InvalidCredentialsError(HTTPException):
-    def __init__(self):
-        super().__init__(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Неверные учетные данные",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+class InvalidCredentialsError(BaseApplicationException):
+    """Invalid credentials error."""
+    def __init__(self, message: str = "Invalid credentials", code: int = 401):
+        super().__init__(message, code)
 
 
-class UserNotFoundError(HTTPException):
-    def __init__(self):
-        super().__init__(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Пользователь не найден",
-        )
+class UserNotFoundError(BaseApplicationException):
+    """User not found error."""
+    def __init__(self, message: str = "User not found", code: int = 404):
+        super().__init__(message, code)
 
 
-class InvalidTokenError(HTTPException):
-    def __init__(self, detail: str = "Недействительный токен"):
-        super().__init__(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=detail,
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+class UserAlreadyExistsError(BaseApplicationException):
+    """User already exists error."""
+    def __init__(self, message: str = "User already exists", code: int = 409):
+        super().__init__(message, code)
 
 
-class RateLimitExceededError(HTTPException):
-    def __init__(self):
-        super().__init__(
-            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            detail="Превышен лимит запросов",
-        )
+class EmailVerificationRequiredError(BaseApplicationException):
+    """Email verification required error."""
+    def __init__(self, message: str = "Email verification required", code: int = 403):
+        super().__init__(message, code)
 
 
-class EmailAlreadyExistsError(HTTPException):
-    def __init__(self):
-        super().__init__(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email уже зарегистрирован",
-        )
+class RateLimitExceededError(BaseApplicationException):
+    """Rate limit exceeded error."""
+    def __init__(self, message: str = "Rate limit exceeded", code: int = 429):
+        super().__init__(message, code)
 
 
-class PasswordTooWeakError(HTTPException):
-    def __init__(self):
-        super().__init__(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Пароль слишком слабый. Должен содержать минимум 8 символов, заглавную букву и цифру.",
-        )
+class PasswordResetTokenExpiredError(BaseApplicationException):
+    """Password reset token expired error."""
+    def __init__(self, message: str = "Password reset token expired", code: int = 400):
+        super().__init__(message, code)
+
+
+class InvalidTokenError(BaseApplicationException):
+    """Invalid token error."""
+    def __init__(self, message: str = "Invalid token", code: int = 401):
+        super().__init__(message, code)

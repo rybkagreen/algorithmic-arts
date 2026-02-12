@@ -15,8 +15,6 @@ from sqlalchemy.dialects.postgresql import UUID as PGUUID
 from sqlalchemy.dialects.postgresql import VECTOR
 
 from .base import BaseModel, TimestampMixin
-from .company_metric import CompanyMetric
-from .company_update import CompanyUpdate
 
 
 class Company(BaseModel, TimestampMixin):

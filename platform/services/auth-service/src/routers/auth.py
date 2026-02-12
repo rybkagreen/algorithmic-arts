@@ -1,6 +1,9 @@
+"""Auth routers for auth service."""
+
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from shared.logging import get_logger
 from .config import settings
 from .core.exceptions import (
     InvalidCredentialsError,
@@ -8,16 +11,21 @@ from .core.exceptions import (
     UserNotFoundError,
 )
 from .core.rate_limiter import limiter
-from .dependencies import get_db, get_jwt_service, get_user_repository
-from .schemas.auth import (
+from .dependencies import get_db, get_jwt_service, get_user_repository, get_oauth_service
+from .schemas.user import (
     LoginRequest,
     PasswordConfirmRequest,
     PasswordResetRequest,
     RefreshRequest,
     RegisterRequest,
     TokenResponse,
+    OAuthLoginRequest,
+    OAuthLoginResponse,
 )
 from .services.auth_service import AuthService
+from .services.oauth_service import OAuthService
+
+logger = get_logger("auth-router")
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -31,9 +39,14 @@ async def register(
     db: AsyncSession = Depends(get_db),
     auth_service: AuthService = Depends(),
 ):
-    user = await auth_service.register(body)
-    # В реальной реализации здесь будет отправка email через background task
-    return {"message": "Регистрация успешна. Проверьте email для верификации."}
+    """Register new user."""
+    try:
+        user = await auth_service.register(body)
+        # В реальной реализации здесь будет отправка email через background task
+        return {"message": "Регистрация успешна. Проверьте email для верификации."}
+    except Exception as e:
+        logger.error("Registration failed", error=str(e))
+        raise HTTPException(status_code=400, detail="Registration failed")
 
 
 @router.post("/login", response_model=TokenResponse)
@@ -43,7 +56,12 @@ async def login(
     body: LoginRequest,
     auth_service: AuthService = Depends(),
 ):
-    return await auth_service.authenticate(body)
+    """Login user and return tokens."""
+    try:
+        return await auth_service.authenticate(body)
+    except Exception as e:
+        logger.error("Login failed", error=str(e))
+        raise HTTPException(status_code=401, detail="Invalid credentials")
 
 
 @router.post("/refresh", response_model=TokenResponse)
@@ -51,9 +69,32 @@ async def refresh(
     body: RefreshRequest,
     auth_service: AuthService = Depends(),
 ):
-    return await auth_service.refresh_tokens(body.refresh_token)
+    """Refresh tokens using refresh token."""
+    try:
+        return await auth_service.refresh_tokens(body.refresh_token)
+    except Exception as e:
+        logger.error("Token refresh failed", error=str(e))
+        raise HTTPException(status_code=401, detail="Invalid refresh token")
+
+
+@router.post("/oauth/login", response_model=OAuthLoginResponse)
+@limiter.limit("10/hour")
+async def oauth_login(
+    request: Request,
+    body: OAuthLoginRequest,
+    oauth_service: OAuthService = Depends(),
+):
+    """OAuth login endpoint."""
+    try:
+        return await oauth_service.login_with_oauth(
+            body.provider, body.code, body.redirect_uri
+        )
+    except Exception as e:
+        logger.error("OAuth login failed", provider=body.provider, error=str(e))
+        raise HTTPException(status_code=400, detail=f"OAuth authentication failed: {str(e)}")
 
 
 @router.get("/health")
 async def health_check():
+    """Health check endpoint."""
     return {"status": "healthy", "service": "auth-service"}

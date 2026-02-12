@@ -1,38 +1,55 @@
-from redis.asyncio import Redis
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker
+"""Auth service dependencies."""
+
+from typing import AsyncGenerator
+
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from shared.logging import get_logger
 
 from .config import settings
-from .repositories.user_repository import UserRepository
-from .services.jwt_service import JWTService
 
-# Создаем асинхронный engine
+logger = get_logger("auth-service")
+
+# Create async engine
 engine = create_async_engine(
     f"postgresql+asyncpg://{settings.database.user}:{settings.database.password}@{settings.database.host}:{settings.database.port}/{settings.database.name}",
     echo=False,
     pool_size=settings.database.pool_size,
     max_overflow=settings.database.max_overflow,
+    future=True,
 )
 
-# Создаем sessionmaker
-async_session_maker = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+# Create session factory
+async_session_factory = async_sessionmaker(
+    engine, expire_on_commit=False, class_=AsyncSession
+)
 
 
-def get_db():
-    return async_session_maker()
-
-
-def get_redis():
-    return Redis(
-        host=settings.redis.host, port=settings.redis.port, db=settings.redis.db
-    )
+async def get_db() -> AsyncGenerator[AsyncSession, None]:
+    """Get database session."""
+    async with async_session_factory() as session:
+        try:
+            yield session
+        except Exception as e:
+            logger.error("Database session error", error=str(e))
+            await session.rollback()
+            raise
+        finally:
+            await session.close()
 
 
 def get_jwt_service():
-    redis = get_redis()
-    return JWTService(redis)
+    """Get JWT service."""
+    from .services.jwt_service import JWTService
+    return JWTService()
 
 
 def get_user_repository():
-    db = get_db()
-    return UserRepository(db)
+    """Get user repository."""
+    from .repositories.user_repository import UserRepository
+    return UserRepository()
+
+
+def get_oauth_service():
+    """Get OAuth service."""
+    from .services.oauth_service import OAuthService
+    return OAuthService()
