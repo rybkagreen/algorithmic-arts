@@ -1,0 +1,82 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'services'
+    metrics_path: '/metrics'
+    scheme: 'http'
+    kubernetes_sd_configs:
+      - role: 'pod'
+        api_server: 'https://kubernetes.default.svc'
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_container_port_number]
+        action: keep
+        regex: 8000
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        action: keep
+        regex: true
+
+  # Service-specific scrapes (for local development)
+  - job_name: 'api-gateway'
+    static_configs:
+      - targets: ['api-gateway:8000']
+
+  - job_name: 'auth-service'
+    static_configs:
+      - targets: ['auth-service:8001']
+
+  - job_name: 'user-service'
+    static_configs:
+      - targets: ['user-service:8002']
+
+  - job_name: 'company-service'
+    static_configs:
+      - targets: ['company-service:8003']
+
+  - job_name: 'partner-service'
+    static_configs:
+      - targets: ['partner-service:8004']
+
+  - job_name: 'ai-core-service'
+    static_configs:
+      - targets: ['ai-core-service:8005']
+
+  - job_name: 'data-pipeline'
+    static_configs:
+      - targets: ['data-pipeline:8006']
+
+  - job_name: 'crm-hub'
+    static_configs:
+      - targets: ['crm-hub:8007']
+
+  - job_name: 'search-service'
+    static_configs:
+      - targets: ['search-service:8008']
+
+  - job_name: 'reporting'
+    static_configs:
+      - targets: ['reporting:8009']
+
+  - job_name: 'billing'
+    static_configs:
+      - targets: ['billing:8010']
+
+  - job_name: 'notification'
+    static_configs:
+      - targets: ['notification:8011']
+
+rule_files:
+  - "rules/*.rules.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ['alertmanager:9093']

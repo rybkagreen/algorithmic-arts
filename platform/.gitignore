@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+env/
+venv/
+ENV/
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+.coverage
+.tox/
+.nox/
+dist/
+build/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+.env
+.venv
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Docker
+docker-compose.override.yml
+*.log
+*.tmp
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Secrets
+*.secret
+secrets/
+
+# Linting artifacts
+.mypy_cache/
+.pytype/
+htmlcov/
+.coverage
+.cache/
+__pycache__/
+*.pyc
+
+# Pre-commit
+.pre-commit-config.yaml
+.pre-commit-hooks/

@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "services": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z0-9._-]+$": {
+          "type": "object",
+          "properties": {
+            "image": { "type": "string" },
+            "container_name": { "type": "string" },
+            "ports": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "environment": {
+              "type": "object"
+            },
+            "volumes": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "healthcheck": {
+              "type": "object"
+            },
+            "networks": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "volumes": {
+      "type": "object"
+    },
+    "networks": {
+      "type": "object"
+    }
+  },
+  "required": ["version", "services"]
+}

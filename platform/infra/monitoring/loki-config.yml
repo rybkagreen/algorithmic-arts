@@ -1,0 +1,48 @@
+# loki-config.yml
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+  grpc_listen_port: 9096
+
+ingester:
+  lifecycler:
+    address: 127.0.0.1
+    heartbeat_period: 5s
+    join_after: 0s
+    observe_period: 10s
+    ready_timeout: 10s
+    max_transfer_retries: 0
+  chunk_idle_period: 1h
+  max_chunk_age: 1h
+  chunk_target_size: 1536000
+  chunk_wait_period: 1m
+  min_chunk_idle_period: 30s
+
+schema_config:
+  configs:
+    - from: 2020-10-24
+      store: boltdb-shipper
+      object_store: filesystem
+      schema: v11
+      index:
+        prefix: index_
+        period: 168h
+
+storage_config:
+  boltdb_shipper:
+    directory: /loki/loki.db
+  filesystem:
+    directory: /loki/chunks
+
+limits_config:
+  enforce_metric_name: false
+  reject_old_samples: true
+  reject_old_samples_max_age: 168h
+
+query_range:
+  results_cache:
+    cache:
+      embedded_cache:
+        enabled: true
+        max_size_mb: 100

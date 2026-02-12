@@ -1,0 +1,56 @@
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+  grpc_listen_port: 9096
+
+ingester:
+  lifecycler:
+    address: 127.0.0.1
+    heartbeat_timeout: 1m
+    join_after: 0s
+    observe_period: 10s
+    ready_timeout: 0s
+    wal_dir: /tmp/loki/wal
+  chunk_idle_period: 1h       # Any chunk not receiving new logs in 1 hour will be flushed
+  max_chunk_age: 1h           # All chunks will be flushed when they hit a maximum age of 1 hour
+  chunk_target_size: 1.5MB    # Loki will attempt to build chunks up to 1.5MB, flushing first if chunk_idle_period or max_chunk_age is reached first
+  max_transfer_retries: 0     # Chunk transfers disabled
+
+schema_config:
+  configs:
+    - from: 2020-10-24
+      store: boltdb-shipper
+      object_store: filesystem
+      schema: v11
+      index:
+        prefix: index_
+        period: 168h
+
+storage_config:
+  boltdb_shipper:
+    active_index_directory: /tmp/loki/index
+    cache_location: /tmp/loki/index-cache
+    cache_ttl: 168h # Can be increased for faster performance over longer date ranges, uses more disk space
+    shared_store: filesystem
+  filesystem:
+    directory: /tmp/loki/chunks
+
+compactor:
+  working_directory: /tmp/loki/compactor
+  shared_store: filesystem
+
+limits_config:
+  enforce_metric_name: false
+  reject_old_samples: true
+  reject_old_samples_max_age: 168h
+
+chunk_store_config:
+  max_look_back_period: 0s
+
+table_manager:
+  retention_deletes_enabled: false
+  retention_period: 0s
+
+ruler:
+  alertmanager_url: http://localhost:9093

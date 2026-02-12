@@ -1,0 +1,25 @@
+# Ignore everything except what we need
+*
+!Dockerfile
+!pyproject.toml
+!requirements.txt
+!src/
+!app/
+!scripts/
+!migrations/
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+
+# Ignore git files
+.git
+.gitignore
+
+# Ignore IDE files
+.idea/
+.vscode/
+
+# Ignore logs and temporary files
+*.log
+*.tmp

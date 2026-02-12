@@ -1,0 +1,35 @@
+[MASTER]
+init-hook='import sys; sys.path.append("services/api-gateway/src"); sys.path.append("services/auth-service/src")'
+persistent=no
+load-plugins=pylint.extensions.docparams,pylint.extensions.docstyle
+
+[MESSAGES CONTROL]
+disable=C0114,C0115,C0116,R0801,W0511
+# C0114: Missing module docstring
+# C0115: Missing class docstring  
+# C0116: Missing function docstring
+# R0801: Similar lines in 2 files (duplicate code)
+# W0511: TODO/FIXME/XXX found
+
+[FORMAT]
+max-line-length=88
+indent-string='    '
+
+[VARIABLES]
+additional-builtins=_
+
+[TYPECHECK]
+generated-members=objects.*,session.*,engine.*
+
+[DESIGN]
+max-args=7
+max-locals=15
+max-statements=50
+max-parents=7
+max-attributes=7
+min-public-methods=2
+max-returns=6
+max-branchings=12
+
+[LOGGING]
+logging-modules=logging

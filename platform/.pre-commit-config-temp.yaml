@@ -1,0 +1,81 @@
+# Pre-commit hooks for ALGORITHMIC ARTS platform
+
+repos:
+  # Python hooks
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.9.0
+    hooks:
+      - id: mypy
+        args: [--show-error-codes, --pretty]
+        files: \.py$
+
+  - repo: https://github.com/psf/black
+    rev: 24.3.0
+    hooks:
+      - id: black
+        args: [--line-length=88]
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: [--profile=black, --line-length=88]
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.0.0
+    hooks:
+      - id: flake8
+        args: [--max-line-length=88, --extend-ignore=E203,W503]
+
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.7
+    hooks:
+      - id: bandit
+        args: [--recursive, --configfile=.bandit.yml]
+
+  # TypeScript/JavaScript hooks
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v8.56.0
+    hooks:
+      - id: eslint
+        types: [file]
+        files: \.(js|jsx|ts|tsx)$
+        args: [--fix]
+
+  # General hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-added-large-files
+        args: [--maxkb=500]
+      - id: check-ast
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: check-toml
+      - id: check-yaml
+      - id: debug-statements
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+      - id: trailing-whitespace
+
+  # Docker hooks
+  - repo: https://github.com/sirosen/check-jsonschema
+    rev: 0.27.0
+    hooks:
+      - id: check-docker-compose
+        files: docker-compose\.yml$
+        args: [--schema=custom/docker-compose-schema.json]
+
+  # Commit message validation
+  - repo: https://github.com/cjolowicz/hyperstyle
+    rev: v1.0.0
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
+        args: [--check]
+
+# Custom schema for docker-compose validation
+# Note: We'll create this schema in a separate step

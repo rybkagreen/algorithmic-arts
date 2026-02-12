@@ -1,0 +1,36 @@
+# Bandit configuration for ALGORITHMIC ARTS platform
+
+# Profile settings
+profile:
+  - low
+  - medium
+  - high
+
+# Security tests to run (focused on critical issues)
+tests:
+  - B104  # Binding to all interfaces
+  - B106  # Hardcoded password string
+  - B107  # Hardcoded password function arguments
+  - B108  # Hardcoded temp file directory
+  - B110  # Try, except pass
+  - B201  # Flask debug mode
+  - B301  # Pickle
+  - B302  # Marshal
+  - B303  # MD5
+  - B304  # CBC mode
+  - B305  # Zip
+  - B306  # Random
+  - B307  # Eval
+  - B308  # MarkSafe
+  - B310  # urllib urlopen
+  - B311  # Random
+  - B312  # Telnet
+  - B313  # XML
+  - B323  # Unverified HTTPS
+  - B324  # SHA1
+  - B325  # Tempfile
+  - B326  # Weak crypto
+  - B327  # Weak crypto
+  - B328  # Weak crypto
+  - B329  # Weak crypto
+  - B330  # Weak crypto

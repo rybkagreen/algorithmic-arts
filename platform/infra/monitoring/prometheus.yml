@@ -1,0 +1,34 @@
+# prometheus.yml
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'platform'
+    static_configs:
+      - targets: ['api-gateway:80', 'auth-service:8001', 'user-service:8002', 'company-service:8003', 'partner-service:8004', 'ai-core-service:8005', 'data-pipeline:8006', 'crm-hub:8007', 'search-service:8008', 'reporting:8009', 'billing:8010', 'notification:8011']
+    metrics_path: '/metrics'
+
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres:9187']
+
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:9121']
+
+  - job_name: 'elasticsearch'
+    static_configs:
+      - targets: ['elasticsearch:9114']
+
+  - job_name: 'kafka'
+    static_configs:
+      - targets: ['kafka:9102']
+
+  - job_name: 'minio'
+    static_configs:
+      - targets: ['minio:9001']
+
+  - job_name: 'clickhouse'
+    static_configs:
+      - targets: ['clickhouse:8123']
