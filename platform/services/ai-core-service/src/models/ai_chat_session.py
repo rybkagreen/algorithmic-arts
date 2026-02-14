@@ -1,10 +1,9 @@
 import uuid
 
-from sqlalchemy import UUID, Column, DateTime, ForeignKey, String, Text
+from sqlalchemy import Column, ForeignKey, String
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 
-from ..models.user import User
 from .base import BaseModel, TimestampMixin
 
 

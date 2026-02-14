@@ -1,11 +1,9 @@
 import uuid
-from datetime import datetime
 
-from sqlalchemy import UUID, Column, DateTime, String, Text
+from sqlalchemy import Column, DateTime, String, Text
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 
 from .base import BaseModel, TimestampMixin
-from .user import User
 
 
 class OAuthConnection(BaseModel, TimestampMixin):

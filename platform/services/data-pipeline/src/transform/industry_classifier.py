@@ -1,4 +1,3 @@
-from typing import List, Dict
 
 INDUSTRY_KEYWORDS = {
     "Martech": ["маркетинг", "реклама", "retargeting", "crm", "lead", "conversion"],

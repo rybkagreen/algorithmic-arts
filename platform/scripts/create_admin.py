@@ -5,7 +5,6 @@ import os
 import sys
 import uuid
 from datetime import datetime
-from typing import Optional
 
 # Add project root to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -14,26 +13,35 @@ from sqlalchemy import create_engine
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import sessionmaker
 
-# Import models from auth-service (assuming it's the main user service)
-try:
-    from platform.services.auth-service.src.models.permission import Permission
-    from platform.services.auth-service.src.models.role import Role
-    from platform.services.auth-service.src.models.role_permission import RolePermission
-    from platform.services.auth-service.src.models.user import User
-    from platform.services.auth-service.src.models.user_role import UserRole
-except ImportError:
-    # Fallback for different structure
+# Import models from auth-service (using dynamic import to avoid hyphen issues)
+import importlib
+import sys
+import os
+
+def import_model(service_name: str, module_name: str):
+    """Dynamically import model from service with hyphen in name."""
+    service_path = os.path.join("platform", "services", service_name, "src")
+    sys.path.insert(0, service_path)
     try:
-        from platform.services.auth_service.src.models.permission import Permission
-        from platform.services.auth_service.src.models.role import Role
-        from platform.services.auth_service.src.models.role_permission import (
-            RolePermission,
-        )
-        from platform.services.auth_service.src.models.user import User
-        from platform.services.auth_service.src.models.user_role import UserRole
-    except ImportError:
-        print("Error: Could not import auth service models. Please ensure the auth-service is properly structured.")
-        sys.exit(1)
+        return importlib.import_module(module_name)
+    finally:
+        sys.path.pop(0)
+
+try:
+    permission_mod = import_model("auth-service", "models.permission")
+    role_mod = import_model("auth-service", "models.role")
+    role_perm_mod = import_model("auth-service", "models.role_permission")
+    user_mod = import_model("auth-service", "models.user")
+    user_role_mod = import_model("auth-service", "models.user_role")
+
+    Permission = permission_mod.Permission
+    Role = role_mod.Role
+    RolePermission = role_perm_mod.RolePermission
+    User = user_mod.User
+    UserRole = user_role_mod.UserRole
+except ImportError as e:
+    print(f"Failed to import models: {e}")
+    raise
 
 def create_admin_user(db_url: str, email: str, password: str, full_name: str = "Admin User"):
     """Create admin user with platform_admin role"""

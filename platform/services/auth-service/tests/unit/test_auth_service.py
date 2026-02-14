@@ -2,7 +2,6 @@
 
 import pytest
 from unittest.mock import patch
-from datetime import datetime, timedelta
 from uuid import UUID
 
 from src.services.auth_service import AuthService

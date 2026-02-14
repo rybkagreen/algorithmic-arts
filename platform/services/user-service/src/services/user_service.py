@@ -1,14 +1,14 @@
 """User service for user service."""
 
-from datetime import datetime, timedelta
-from typing import Dict, Optional, List, Any
+from typing import List
 import uuid
 
+from .dependencies import get_db
+
 from shared.logging import get_logger
-from .config import settings
 from .repositories.user_repository import UserRepository
 from .schemas.user import UserCreate, UserUpdate, UserOut, CompanyCreate, CompanyUpdate, CompanyOut
-from .core.exceptions import UserNotFoundError, InvalidCredentialsError
+from .core.exceptions import UserNotFoundError
 
 logger = get_logger("user-service")
 

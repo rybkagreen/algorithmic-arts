@@ -1,6 +1,6 @@
 # Makefile for ALGORITHMIC ARTS platform
 
-.PHONY: help setup start stop logs test migrate shell-api shell-db clean
+.PHONY: help setup start stop logs test migrate shell-api shell-db clean dev
 
 help:
 	@echo "Available commands:"
@@ -15,6 +15,7 @@ help:
 	@echo "  shell-db     - Open PostgreSQL shell"
 	@echo "  generate-secrets - Generate secrets"
 	@echo "  seed-data    - Load test data"
+	@echo "  dev          - Launch interactive Dev Hub menu"
 
 setup:
 	@echo "Setting up development environment..."
@@ -77,3 +78,7 @@ clean:
 	docker compose down -v
 	rm -f .env.secrets
 	@echo "Cleanup complete."
+
+dev:
+	@echo "Launching ALGORITHMIC ARTS DEV HUB (v2.1)..."
+	platform/.dev-venv/bin/python platform/scripts/dev-menu.py

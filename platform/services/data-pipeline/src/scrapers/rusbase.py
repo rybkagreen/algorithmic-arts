@@ -1,5 +1,4 @@
 import re
-import json
 from .base_scraper import BaseScraper
 import structlog
 

@@ -1,11 +1,9 @@
 import uuid
-from datetime import datetime
 
-from sqlalchemy import UUID, Boolean, Column, DateTime, Text
+from sqlalchemy import Boolean, Column, DateTime, Text
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 
 from .base import BaseModel, TimestampMixin
-from .partnership import Partnership
 
 
 class OutreachMessage(BaseModel, TimestampMixin):

@@ -1,9 +1,11 @@
 """Auth service for auth service."""
 
 from datetime import datetime, timedelta
-from typing import Dict, Optional, Any
 import bcrypt
-import secrets
+
+from .dependencies import get_db
+from sqlalchemy import update
+from .models.user import User
 
 from shared.logging import get_logger
 from .config import settings
@@ -15,7 +17,7 @@ from .core.exceptions import (
     UserAlreadyExistsError,
     EmailVerificationRequiredError,
 )
-from .schemas.user import UserCreate, UserOut, Token, TokenData
+from .schemas.user import UserCreate, UserOut, Token
 
 logger = get_logger("auth-service")
 

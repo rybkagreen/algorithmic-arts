@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from pydantic-settings import BaseSettings
+from pydantic_settings import BaseSettings  # noqa
 
 
 class DatabaseSettings(BaseModel):

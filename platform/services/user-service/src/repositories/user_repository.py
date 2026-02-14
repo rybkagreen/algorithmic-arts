@@ -4,11 +4,10 @@ from datetime import datetime
 from typing import Optional, List
 from uuid import UUID
 
-from sqlalchemy import select, update, delete
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .models.user import User, Company
-from .schemas.user import UserOut, CompanyOut
 
 class UserRepository:
     """User repository."""

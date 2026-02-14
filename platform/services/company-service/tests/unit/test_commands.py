@@ -45,7 +45,8 @@ class TestCreateCompanyCommand:
     async def test_create_company_with_validation_error(self):
         """Проверка обработки ошибок валидации."""
         mock_repo = AsyncMock(spec=CompanyRepository)
-        
+        mock_producer = AsyncMock()
+
         command = CreateCompanyCommand(mock_repo, mock_producer)
         
         # Попытка создать компанию с недопустимыми данными
@@ -82,6 +83,7 @@ class TestUpdateCompanyCommand:
         )
         mock_repo.get_by_id = AsyncMock(return_value=existing_company)
         
+        mock_producer = AsyncMock()
         # Создаем команду
         command = UpdateCompanyCommand(
             company_id=company_id,

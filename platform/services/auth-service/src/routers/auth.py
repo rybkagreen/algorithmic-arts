@@ -4,18 +4,10 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request,
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from shared.logging import get_logger
-from .config import settings
-from .core.exceptions import (
-    InvalidCredentialsError,
-    RateLimitExceededError,
-    UserNotFoundError,
-)
 from .core.rate_limiter import limiter
-from .dependencies import get_db, get_jwt_service, get_user_repository, get_oauth_service
+from .dependencies import get_db
 from .schemas.user import (
     LoginRequest,
-    PasswordConfirmRequest,
-    PasswordResetRequest,
     RefreshRequest,
     RegisterRequest,
     TokenResponse,
@@ -41,7 +33,8 @@ async def register(
 ):
     """Register new user."""
     try:
-        user = await auth_service.register(body)
+
+        await auth_service.register(body)
         # В реальной реализации здесь будет отправка email через background task
         return {"message": "Регистрация успешна. Проверьте email для верификации."}
     except Exception as e:

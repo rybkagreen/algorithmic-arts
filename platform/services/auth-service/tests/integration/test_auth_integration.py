@@ -2,7 +2,6 @@
 
 import pytest
 import httpx
-from uuid import UUID
 
 # Test configuration
 BASE_URL = "http://localhost:8001"

@@ -1,8 +1,6 @@
 """AI models for AI core service."""
 
 import uuid
-from datetime import datetime
-from typing import Optional, List
 
 from sqlalchemy import (
     Column,
@@ -13,13 +11,12 @@ from sqlalchemy import (
     Text,
     Enum,
     ForeignKey,
-    UniqueConstraint,
+    Float,
 )
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 from sqlalchemy.orm import relationship
 
 from .base import BaseModel, TimestampMixin
-from ..schemas.ai import AnalysisStyle, Language
 
 class AIAnalysis(BaseModel, TimestampMixin):
     __tablename__ = "ai_analyses"

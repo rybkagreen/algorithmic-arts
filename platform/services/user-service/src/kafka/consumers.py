@@ -4,8 +4,6 @@ import structlog
 from aiokafka import AIOKafkaConsumer
 
 from .config import settings
-from .core.cache import UserCacheService
-from .repositories.user_repository import UserRepository
 
 logger = structlog.get_logger()
 

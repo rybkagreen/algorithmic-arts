@@ -1,0 +1,43 @@
+[tool.poetry]
+name = "crm-hub-service"
+version = "3.1.0"
+description = "CRM Hub Service for ALGORITHMIC ARTS platform"
+authors = ["Your Name <your.email@example.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.115.0"
+uvicorn = {version = "^0.31.0", extras = ["standard"]}
+sqlalchemy = {version = "^2.0.0", extras = ["asyncio"]}
+alembic = "^1.13.0"
+pydantic = "^2.6.0"
+httpx = "^0.24.0"
+aiokafka = "^0.11.0"
+celery = {version = "^5.4.0", extras = ["redis"]}
+cryptography = "^42.0.0"
+structlog = "^23.0.0"
+python-dotenv = "^1.0.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0.0"
+pytest-asyncio = "^0.23.0"
+mypy = "^1.9.0"
+black = "^24.0.0"
+isort = "^5.13.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py312']
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 88

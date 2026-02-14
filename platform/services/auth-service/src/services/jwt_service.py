@@ -2,7 +2,7 @@
 
 import jwt
 from datetime import datetime, timedelta
-from typing import Dict, Optional, Any
+from typing import Dict, Any
 
 from shared.logging import get_logger
 from .config import settings

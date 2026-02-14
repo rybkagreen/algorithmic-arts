@@ -2,6 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 from typing import List, Optional
+from shared.logging import get_logger
+
+logger = get_logger()
 
 from .application.commands.create_company import CreateCompanyCommand
 from .application.commands.update_company import UpdateCompanyCommand
@@ -10,9 +13,7 @@ from .application.queries.get_company import GetCompanyQuery
 from .application.queries.list_companies import ListCompaniesQuery
 from .application.queries.search_companies import SearchCompaniesQuery
 from .application.queries.get_similar_companies import GetSimilarCompaniesQuery
-from .config import settings
 from .dependencies import get_db, get_company_repository, get_company_indexer
-from .infrastructure.kafka.producers import CompanyEventProducer
 from .infrastructure.repositories.company_repository import CompanyRepository
 from .schemas.company import CompanyCreate, CompanyUpdate, CompanyResponse
 from .domain.exceptions import CompanyNotFoundError
@@ -169,5 +170,8 @@ async def get_similar_companies(
     try:
         companies = await similar_query.execute(company_id=company_id, top_k=top_k)
         return companies
+    except Exception as exc:
+        logger.error("Failed to get similar companies", error=str(exc), company_id=company_id)
+        raise
 
 

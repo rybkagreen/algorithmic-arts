@@ -1,4 +1,3 @@
-import json
 from .base_scraper import BaseScraper
 import structlog
 
@@ -83,7 +82,7 @@ class CrunchbaseScraper(BaseScraper):
                 employee_count_raw = properties.get("employee_count")
                 funding_total_usd = properties.get("funding_total", {}).get("value_usd")
                 last_funding_type = properties.get("last_funding_type")
-                location_identifiers = properties.get("location_identifiers", [])
+                properties.get("location_identifiers", [])
                 
                 # Маппинг полей
                 industry = categories[0] if categories else "SaaS"

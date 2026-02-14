@@ -1,12 +1,10 @@
 """Partner routers for partner service."""
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from shared.logging import get_logger
-from .config import settings
 from .core.exceptions import UserNotFoundError
-from .dependencies import get_db, get_partner_service
+from .dependencies import get_partner_service
 from .schemas.partner import PartnershipCreate, PartnershipUpdate, PartnershipOut
 
 logger = get_logger("partner-router")

@@ -1,10 +1,8 @@
 import uuid
 
-from sqlalchemy import UUID, Boolean, Column, ForeignKey, String
-from sqlalchemy.dialects.postgresql import INET
+from sqlalchemy import Boolean, Column, ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 
-from ..models.user import User
 from .base import BaseModel, TimestampMixin
 
 

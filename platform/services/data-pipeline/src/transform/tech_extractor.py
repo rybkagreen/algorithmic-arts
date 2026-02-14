@@ -1,5 +1,4 @@
-import re
-from typing import Dict, List
+from typing import Dict
 
 TECH_KEYWORDS = {
     "python": ["python", "django", "fastapi", "flask"],

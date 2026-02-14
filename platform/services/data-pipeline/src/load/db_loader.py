@@ -61,7 +61,7 @@ async def upsert_companies(
     )
     
     try:
-        result = await session.execute(stmt)
+        await session.execute(stmt)
         await session.commit()
         
         # Получаем ID вставленных записей (для новых записей)

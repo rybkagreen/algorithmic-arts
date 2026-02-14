@@ -1,9 +1,8 @@
-from typing import Dict, Any, List
+from typing import Dict, Any
 from .ner_extractor import extract_entities
 from .funding_parser import parse_funding
 from .tech_extractor import extract_tech_stack
 from .industry_classifier import classify_industry
-from .deduplicator import find_duplicate
 
 def normalize_company_data(raw_data: Dict[str, Any]) -> Dict[str, Any]:
     """

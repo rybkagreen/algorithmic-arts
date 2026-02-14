@@ -1,8 +1,6 @@
 """User model for auth service."""
 
 import uuid
-from datetime import datetime
-from typing import Optional, List
 
 from sqlalchemy import (
     Column,
@@ -19,7 +17,6 @@ from sqlalchemy.dialects.postgresql import UUID as PGUUID
 from sqlalchemy.orm import relationship
 
 from .base import BaseModel, TimestampMixin
-from ..schemas import UserStatus
 
 
 class User(BaseModel, TimestampMixin):

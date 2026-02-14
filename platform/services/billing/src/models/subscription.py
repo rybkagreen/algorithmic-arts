@@ -1,11 +1,9 @@
 import uuid
-from datetime import datetime
 
-from sqlalchemy import UUID, Boolean, Column, DateTime, String
+from sqlalchemy import Boolean, Column, DateTime, String
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 
 from .base import BaseModel, TimestampMixin
-from .payment import Payment
 
 
 class PlanType(str):

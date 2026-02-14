@@ -1,5 +1,4 @@
 from contextlib import asynccontextmanager
-import structlog
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
@@ -7,7 +6,6 @@ from prometheus_fastapi_instrumentator import Instrumentator
 
 from shared.logging import get_logger
 from shared.schemas import HealthCheckResponse
-from .config import settings
 from .routers import users
 
 # Use shared logging configuration

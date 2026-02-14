@@ -1,16 +1,16 @@
 """OAuth service for auth service."""
 
-import json
 import httpx
-import secrets
 from datetime import datetime, timedelta
-from typing import Dict, Optional, Any
+from typing import Dict, Any
+
+from .dependencies import get_db
 
 from shared.logging import get_logger
 from .config import settings
 from .repositories.user_repository import UserRepository
-from .core.exceptions import UserNotFoundError, InvalidCredentialsError
-from .schemas.user import OAuthProvider, OAuthLoginRequest, OAuthLoginResponse, UserOut
+from .core.exceptions import InvalidCredentialsError
+from .schemas.user import OAuthProvider, OAuthLoginResponse, UserOut
 
 logger = get_logger("oauth-service")
 

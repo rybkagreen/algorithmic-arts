@@ -2,7 +2,6 @@
 """Generate secrets for ALGORITHMIC ARTS platform."""
 
 import os
-import sys
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.serialization import Encoding, PrivateFormat, PublicFormat
@@ -46,16 +45,16 @@ def main():
     # Generate other secrets
     print(f"SECRET_KEY={os.urandom(32).hex()}")
     print(f"REDIS_PASSWORD={os.urandom(16).hex()}")
-    print(f"POSTGRES_PASSWORD=change_me")
-    print(f"CLICKHOUSE_PASSWORD=change_me")
+    print("POSTGRES_PASSWORD=change_me")
+    print("CLICKHOUSE_PASSWORD=change_me")
     
     # OAuth secrets (for development only)
-    print(f"OAUTH_YANDEX_CLIENT_ID=dev_yandex_client_id")
-    print(f"OAUTH_YANDEX_CLIENT_SECRET=dev_yandex_client_secret")
-    print(f"OAUTH_GOOGLE_CLIENT_ID=dev_google_client_id")
-    print(f"OAUTH_GOOGLE_CLIENT_SECRET=dev_google_client_secret")
-    print(f"OAUTH_VK_CLIENT_ID=dev_vk_client_id")
-    print(f"OAUTH_VK_CLIENT_SECRET=dev_vk_client_secret")
+    print("OAUTH_YANDEX_CLIENT_ID=dev_yandex_client_id")
+    print("OAUTH_YANDEX_CLIENT_SECRET=dev_yandex_client_secret")
+    print("OAUTH_GOOGLE_CLIENT_ID=dev_google_client_id")
+    print("OAUTH_GOOGLE_CLIENT_SECRET=dev_google_client_secret")
+    print("OAUTH_VK_CLIENT_ID=dev_vk_client_id")
+    print("OAUTH_VK_CLIENT_SECRET=dev_vk_client_secret")
 
 if __name__ == "__main__":
     main()

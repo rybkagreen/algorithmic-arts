@@ -1,11 +1,10 @@
 import uuid
 
-from sqlalchemy import UUID, Column, ForeignKey, String, Text
+from sqlalchemy import Column, ForeignKey, String, Text
 from sqlalchemy.dialects.postgresql import INET, JSONB
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 
-from ..models.user import User
-from .base import BaseModel, TimestampMixin
+from .base import BaseModel
 
 
 class UserActivityLog(BaseModel):

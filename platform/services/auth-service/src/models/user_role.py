@@ -1,11 +1,8 @@
-import uuid
 
-from sqlalchemy import UUID, Column
+from sqlalchemy import Column
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 
 from .base import BaseModel
-from .role import Role
-from .user import User
 
 
 class UserRole(BaseModel):

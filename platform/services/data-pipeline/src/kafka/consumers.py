@@ -1,5 +1,4 @@
 import json
-import asyncio
 from aiokafka import AIOKafkaConsumer
 from tasks.process_tasks import process_raw_company_task
 import structlog

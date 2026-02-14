@@ -1,11 +1,11 @@
 """Partner service for partner service."""
 
-from datetime import datetime, timedelta
-from typing import Dict, Optional, List, Any
+from typing import List
 import uuid
 
+from .dependencies import get_db
+
 from shared.logging import get_logger
-from .config import settings
 from .repositories.partner_repository import PartnerRepository
 from .schemas.partner import PartnershipCreate, PartnershipUpdate, PartnershipOut, CompanyOut
 from .core.exceptions import UserNotFoundError

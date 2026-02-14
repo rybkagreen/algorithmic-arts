@@ -1,59 +1,75 @@
-# Python
+# ==============================
+# 🐍 Python
+# ==============================
+*.pyc
 __pycache__/
-*.py[cod]
-*$py.class
+*.pyo
+*.pyd
 .Python
-env/
-venv/
-ENV/
 pip-log.txt
 pip-delete-this-directory.txt
 .pytest_cache/
 .coverage
+htmlcov/
 .tox/
 .nox/
 dist/
 build/
 *.egg-info/
-.installed.cfg
 *.egg
+MANIFEST
 
-# Virtual Environment
-.env
-.venv
+# Virtual environments
+.venv/
 venv/
+env/
 ENV/
+env.bak/
+.spyderproject
+.spyproject
 
-# IDE
-.idea/
+# IDE & Editor
 .vscode/
-*.swp
-*.swo
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.komodoproject
+*.code-workspace
+.DS_Store
+Thumbs.db
 
-# Docker
+# ==============================
+# 🐳 Docker & DevOps
+# ==============================
 docker-compose.override.yml
-*.log
-*.tmp
+.dockerignore
+.env.*
+*.env.local
+*.env.dev
+*.env.staging
+*.env.prod
+secrets/
+keys/
+certs/
 
-# Node.js
-node_modules/
+# Build artifacts
+Dockerfile.local
+Dockerfile.dev
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Secrets
-*.secret
-secrets/
+# ==============================
+# 📦 Project-specific
+# ==============================
+# Local dev data
+data/
+tmp/
+logs/
+*.sqlite
+*.db
 
-# Linting artifacts
-.mypy_cache/
-.pytype/
-htmlcov/
-.coverage
-.cache/
-__pycache__/
-*.pyc
-
-# Pre-commit
-.pre-commit-config.yaml
-.pre-commit-hooks/
+# Generated files
+scripts/*.pyc
+platform/.dev-venv/

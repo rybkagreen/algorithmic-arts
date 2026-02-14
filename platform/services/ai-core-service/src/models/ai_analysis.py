@@ -1,20 +1,17 @@
 import uuid
 
 from sqlalchemy import (
-    UUID,
-    Boolean,
     Column,
     DateTime,
     ForeignKey,
-    Integer,
     String,
     Text,
+    func,
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 
-from ..models.user import User
-from .base import BaseModel, TimestampMixin
+from .base import BaseModel
 
 
 class AIAnalysis(BaseModel):

@@ -1,14 +1,12 @@
 """AI repository for AI core service."""
 
-from datetime import datetime
-from typing import Optional, List
+from typing import Optional
 from uuid import UUID
 
-from sqlalchemy import select, update, delete
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .models.ai import AIAnalysis, OutreachMessage
-from .schemas.ai import CompatibilityAnalysisResponse, OutreachMessageResponse
 
 class AIRepository:
     """AI repository."""

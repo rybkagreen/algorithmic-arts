@@ -1,12 +1,10 @@
 """User routers for user service."""
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from shared.logging import get_logger
-from .config import settings
 from .core.exceptions import UserNotFoundError
-from .dependencies import get_db, get_user_service
+from .dependencies import get_user_service
 from .schemas.user import UserCreate, UserUpdate, UserOut, CompanyCreate, CompanyUpdate, CompanyOut
 
 logger = get_logger("user-router")

@@ -1,6 +1,6 @@
 """Auth service exceptions."""
 
-from shared.exceptions import BaseApplicationException, ValidationException
+from shared.exceptions import BaseApplicationException
 
 
 class InvalidCredentialsError(BaseApplicationException):

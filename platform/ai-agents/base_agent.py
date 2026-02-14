@@ -1,7 +1,7 @@
 """Base AI Agent class for the ALGORITHMIC ARTS platform."""
 
 from abc import ABC, abstractmethod
-from typing import Dict, Any, Optional, List, Union
+from typing import Dict, Any, Optional
 import logging
 from datetime import datetime
 import uuid

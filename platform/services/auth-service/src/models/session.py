@@ -1,11 +1,9 @@
 import uuid
-from datetime import datetime
 
-from sqlalchemy import UUID, Column, DateTime, Text
+from sqlalchemy import Column, DateTime, Text
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 
 from .base import BaseModel, TimestampMixin
-from .user import User
 
 
 class Session(BaseModel, TimestampMixin):

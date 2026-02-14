@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import UUID, Column, String, Text
+from sqlalchemy import Column, String, Text
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 
 from .base import BaseModel, TimestampMixin

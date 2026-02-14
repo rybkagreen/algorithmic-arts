@@ -1,11 +1,10 @@
 import uuid
 
-from sqlalchemy import UUID, Column, DateTime, ForeignKey, String, Text
+from sqlalchemy import Column, DateTime, ForeignKey, String, Text, func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 
-from ..models.ai_chat_session import AIChatSession
-from .base import BaseModel, TimestampMixin
+from .base import BaseModel
 
 
 class AIChatMessage(BaseModel):

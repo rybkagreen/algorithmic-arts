@@ -1,12 +1,10 @@
 import uuid
-from datetime import datetime
 from enum import Enum as PyEnum
 
-from sqlalchemy import UUID, Column, DateTime, Enum, String, Text
+from sqlalchemy import Column, DateTime, Enum, String, Text
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 
 from .base import BaseModel, TimestampMixin
-from .crm_connection import CRMConnection
 
 
 class SyncDirection(str, PyEnum):

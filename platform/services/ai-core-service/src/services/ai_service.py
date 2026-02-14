@@ -1,11 +1,8 @@
 """AI service for AI core service."""
 
-from datetime import datetime, timedelta
-from typing import Dict, Optional, List, Any
-import uuid
+from datetime import datetime
 
 from shared.logging import get_logger
-from .config import settings
 from .repositories.ai_repository import AIRepository
 from .schemas.ai import CompatibilityAnalysisRequest, CompatibilityAnalysisResponse, OutreachMessageRequest, OutreachMessageResponse
 

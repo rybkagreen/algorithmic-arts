@@ -1,4 +1,4 @@
-from prometheus_client import Counter, Histogram, Gauge
+from prometheus_client import Counter, Histogram
 
 # Scraper метрики
 scraper_requests = Counter("scraper_requests_total",

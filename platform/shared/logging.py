@@ -1,8 +1,6 @@
 """Shared logging configuration for all services."""
 
 import structlog
-import sys
-from typing import Dict, Any
 from contextvars import ContextVar
 
 # Context variable for request_id

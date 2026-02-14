@@ -1,11 +1,9 @@
-import structlog
 import json
 from datetime import datetime
 from typing import Dict, Any
 from uuid import UUID
 from aiokafka import AIOKafkaConsumer
 from elasticsearch import AsyncElasticsearch
-from shared.events import DomainEvent
 from shared.logging import get_logger
 from ..config import settings
 from ..domain.company import Company
