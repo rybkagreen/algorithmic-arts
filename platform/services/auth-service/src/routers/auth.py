@@ -22,7 +22,7 @@ logger = get_logger("auth-router")
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
-@router.post("/register", status_code=status.HTTP_201_CREATED)
+@router.post("/register", status_code=status.HTTP_201_CREATED, operation_id="registerUser")
 @limiter.limit("10/hour")
 async def register(
     request: Request,
@@ -42,7 +42,7 @@ async def register(
         raise HTTPException(status_code=400, detail="Registration failed")
 
 
-@router.post("/login", response_model=TokenResponse)
+@router.post("/login", response_model=TokenResponse, operation_id="loginUser")
 @limiter.limit("5/5minutes")
 async def login(
     request: Request,
@@ -57,7 +57,7 @@ async def login(
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
 
-@router.post("/refresh", response_model=TokenResponse)
+@router.post("/refresh", response_model=TokenResponse, operation_id="refreshTokens")
 async def refresh(
     body: RefreshRequest,
     auth_service: AuthService = Depends(),
@@ -70,7 +70,7 @@ async def refresh(
         raise HTTPException(status_code=401, detail="Invalid refresh token")
 
 
-@router.post("/oauth/login", response_model=OAuthLoginResponse)
+@router.post("/oauth/login", response_model=OAuthLoginResponse, operation_id="oauthLogin")
 @limiter.limit("10/hour")
 async def oauth_login(
     request: Request,
@@ -87,7 +87,7 @@ async def oauth_login(
         raise HTTPException(status_code=400, detail=f"OAuth authentication failed: {str(e)}")
 
 
-@router.get("/health")
+@router.get("/health", operation_id="healthCheck")
 async def health_check():
     """Health check endpoint."""
     return {"status": "healthy", "service": "auth-service"}

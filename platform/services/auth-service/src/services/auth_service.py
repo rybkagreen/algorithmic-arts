@@ -93,7 +93,7 @@ class AuthService:
             
             # Generate tokens
             token_data = {
-                "user_id": str(user.id),
+                "sub": str(user.id),
                 "email": user.email,
                 "role": user.role.value
             }
@@ -133,7 +133,7 @@ class AuthService:
             
             # Generate new tokens
             token_data = {
-                "user_id": str(user.id),
+                "sub": str(user.id),
                 "email": user.email,
                 "role": user.role.value
             }

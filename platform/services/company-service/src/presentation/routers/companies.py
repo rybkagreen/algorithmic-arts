@@ -21,7 +21,7 @@ from .domain.exceptions import CompanyNotFoundError
 router = APIRouter(prefix="/companies", tags=["Companies"])
 
 
-@router.post("", status_code=status.HTTP_201_CREATED)
+@router.post("", status_code=status.HTTP_201_CREATED, operation_id="createCompany")
 async def create_company(
     data: CompanyCreate,
     db: AsyncSession = Depends(get_db),
@@ -49,15 +49,15 @@ async def create_company(
             api_available=data.api_available,
             is_verified=data.is_verified
         )
-        
+
         company_id = await command.execute(db, company_repo)
         return {"id": str(company_id), "message": "Company created successfully"}
-    
+
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
-@router.get("/{company_id}", response_model=CompanyResponse)
+@router.get("/{company_id}", response_model=CompanyResponse, operation_id="getCompany")
 async def get_company(
     company_id: UUID,
     company_repo: CompanyRepository = Depends(get_company_repository),
@@ -71,7 +71,7 @@ async def get_company(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 
-@router.get("", response_model=List[CompanyResponse])
+@router.get("", response_model=List[CompanyResponse], operation_id="listCompanies")
 async def list_companies(
     skip: int = Query(0, ge=0),
     limit: int = Query(10, ge=1, le=100),
@@ -83,7 +83,7 @@ async def list_companies(
     return companies
 
 
-@router.get("/search", response_model=List[CompanyResponse])
+@router.get("/search", response_model=List[CompanyResponse], operation_id="searchCompanies")
 async def search_companies(
     name: Optional[str] = Query(None),
     industry: Optional[str] = Query(None),
@@ -94,15 +94,15 @@ async def search_companies(
 ):
     """Поиск компаний по имени и отрасли (только активные)."""
     companies = await search_query.execute(
-        name=name, 
-        industry=industry, 
-        skip=skip, 
+        name=name,
+        industry=industry,
+        skip=skip,
         limit=limit
     )
     return companies
 
 
-@router.put("/{company_id}", response_model=CompanyResponse)
+@router.put("/{company_id}", response_model=CompanyResponse, operation_id="updateCompany")
 async def update_company(
     company_id: UUID,
     data: CompanyUpdate,
@@ -131,7 +131,7 @@ async def update_company(
             api_available=data.api_available,
             is_verified=data.is_verified
         )
-        
+
         updated_company = await command.execute(db, company_repo)
         return updated_company
     except CompanyNotFoundError as e:
@@ -140,7 +140,7 @@ async def update_company(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
-@router.delete("/{company_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{company_id}", status_code=status.HTTP_204_NO_CONTENT, operation_id="deleteCompany")
 async def delete_company(
     company_id: UUID,
     db: AsyncSession = Depends(get_db),
@@ -158,7 +158,7 @@ async def delete_company(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
-@router.get("/{company_id}/similar", response_model=List[CompanyResponse])
+@router.get("/{company_id}/similar", response_model=List[CompanyResponse], operation_id="getSimilarCompanies")
 async def get_similar_companies(
     company_id: UUID,
     top_k: int = Query(5, ge=1, le=20),
